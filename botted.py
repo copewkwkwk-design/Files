@@ -6,7 +6,7 @@ import os
 
 # --- CONFIG ---
 TOKEN = "" 
-OWNER_ID = 1429477060577067019
+OWNER_ID = 
 
 class FloodButton(ui.View):
     def __init__(self, message_content):
@@ -32,11 +32,7 @@ class MyBot(discord.Client):
         self.tree = app_commands.CommandTree(self)
         self.whitelist = {
             OWNER_ID, 
-            292895476485980161,
-            980778884767318046,
-            741607657521020989, 
-            1251370888830390386, 
-            1394753272492851322
+            
         } 
 
     async def setup_hook(self):
