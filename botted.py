@@ -5,8 +5,10 @@ import sys
 import os
 
 # --- CONFIG ---
-TOKEN = "BOT_TOKEN" 
-OWNER_ID = ID_OWNER
+# Automatically pulls from Railway Variables dashboard
+TOKEN = os.getenv("BOT_TOKEN")
+# Converts the ID to an integer for proper Discord comparison
+OWNER_ID = int(os.getenv("ID_OWNER")) if os.getenv("ID_OWNER") else 0
 
 class FloodButton(ui.View):
     def __init__(self, message_content):
@@ -15,7 +17,7 @@ class FloodButton(ui.View):
 
     @ui.button(label="press2fludz (5x)", style=discord.ButtonStyle.danger)
     async def flood_button(self, interaction: discord.Interaction, button: ui.Button):
-        # FIXED: Tell Discord we received the click immediately
+        # Tell Discord we received the click immediately to prevent timeout
         await interaction.response.defer(ephemeral=True)
         
         for _ in range(5):
@@ -23,25 +25,31 @@ class FloodButton(ui.View):
                 # Use followup for global external sending
                 await interaction.followup.send(self.msg)
                 await asyncio.sleep(0.03)
-            except:
+            except Exception:
                 break
 
 class MyBot(discord.Client):
     def __init__(self):
-        super().__init__(intents=discord.Intents.all())
+        # Using default intents + message_content is safer for most bots
+        intents = discord.Intents.all()
+        super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
+        
+        # Whitelist containing the owner and your specified friends
         self.whitelist = {
-        292895476485980161,
-        980778884767318046,
-        741607657521020989, 
-        1251370888830390386, 
-        1394753272492851322
-            
+            OWNER_ID, 
+            292895476485980161,
+            980778884767318046,
+            741607657521020989, 
+            1251370888830390386, 
+            1394753272492851322
         } 
 
     async def setup_hook(self):
+        # Syncs slash commands globally
         await self.tree.sync()
-        print(f"Online. Whitelisted: {len(self.whitelist)}")
+        print(f"Logged in as {self.user}")
+        print(f"Online. Whitelisted users: {len(self.whitelist)}")
 
 bot = MyBot()
 
@@ -66,11 +74,18 @@ async def flood(i: discord.Interaction, message: str):
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def say(i: discord.Interaction, message: str):
-    if not is_whitelisted(i): return
+    if not is_whitelisted(i): 
+        return
+    
     await i.response.send_message("...", ephemeral=True)
     try:
         await i.followup.send(message)
-    except:
+    except Exception:
         pass
 
-bot.run(TOKEN)
+if __name__ == "__main__":
+    if TOKEN:
+        bot.run(TOKEN)
+    else:
+        print("CRITICAL ERROR: BOT_TOKEN is missing in Railway Variables!")
+
