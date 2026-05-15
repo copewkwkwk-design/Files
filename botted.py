@@ -5,8 +5,8 @@ import sys
 import os
 
 # --- CONFIG ---
-TOKEN = "" 
-OWNER_ID = 
+TOKEN = "BOT_TOKEN" 
+OWNER_ID = ID_OWNER
 
 class FloodButton(ui.View):
     def __init__(self, message_content):
@@ -31,7 +31,11 @@ class MyBot(discord.Client):
         super().__init__(intents=discord.Intents.all())
         self.tree = app_commands.CommandTree(self)
         self.whitelist = {
-            OWNER_ID, 
+        292895476485980161,
+        980778884767318046,
+        741607657521020989, 
+        1251370888830390386, 
+        1394753272492851322
             
         } 
 
