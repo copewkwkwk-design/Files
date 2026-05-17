@@ -15,16 +15,16 @@ class FloodButton(ui.View):
         super().__init__(timeout=None)
         self.msg = message_content
 
-    @ui.button(label="press2fludz (5x)", style=discord.ButtonStyle.danger)
+    @ui.button(label="press2fludz (10x)", style=discord.ButtonStyle.danger)
     async def flood_button(self, interaction: discord.Interaction, button: ui.Button):
         # Tell Discord we received the click immediately to prevent timeout
         await interaction.response.defer(ephemeral=True)
         
-        for _ in range(5):
+        for _ in range(10):
             try:
                 # Use followup for global external sending
                 await interaction.followup.send(self.msg)
-                await asyncio.sleep(0.03)
+                await asyncio.sleep(0.02)
             except Exception:
                 break
 
@@ -45,8 +45,7 @@ class MyBot(discord.Client):
             1394753272492851322,
             586843272924626944,
             1373933519356563497,
-            1135546221533077654,
-            1492300393814950018
+            1135546221533077654
         } 
 
     async def setup_hook(self):
